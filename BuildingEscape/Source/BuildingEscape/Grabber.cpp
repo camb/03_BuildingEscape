@@ -40,12 +40,25 @@ void UGrabber::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompon
 		OUT PlayerViewPointRotation
 	);
 
-	UE_LOG(LogTemp, Warning, TEXT("Location: %s, Position: %s"),
-		*PlayerViewPointLocation.ToString(),
-		*PlayerViewPointRotation.ToString()
-	);
+	//UE_LOG(LogTemp, Warning, TEXT("Location: %s, Position: %s"),
+	//	*PlayerViewPointLocation.ToString(),
+	//	*PlayerViewPointRotation.ToString()
+	//);
 
 	// Ray-cast out to reach distance
+	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
+
+	// Draw debug line to visualize player reach
+	DrawDebugLine(
+		GetWorld(),
+		PlayerViewPointLocation,
+		LineTraceEnd,
+		FColor(255, 0, 0),
+		false,
+		0.f,
+		0.f,
+		15.f
+		);
 
 	// See what we hit
 }
