@@ -64,15 +64,13 @@ void UGrabber::Grab() {
 	auto ComponentToGrab = HitResult.GetComponent();
 	auto ActorHit = HitResult.GetActor();
 
-	/// If we hit something then attach a physics handle
+	/// if we hit something then attach a physics handle
 	if (ActorHit)
 	{
-		// TODO attach physics handle
-		PhysicsHandle->GrabComponent(
+		PhysicsHandle->GrabComponentAtLocation(
 			ComponentToGrab,
 			NAME_None,
-			ComponentToGrab->GetOwner()->GetActorLocation(),
-			true // allow rotation
+			ComponentToGrab->GetOwner()->GetActorLocation()
 			);
 	}
 }
@@ -80,8 +78,7 @@ void UGrabber::Grab() {
 void UGrabber::Release()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Grab key release successful!"));
-
-	// TODO release physics handle
+	PhysicsHandle->ReleaseComponent();
 }
 
 // Called every frame
@@ -97,10 +94,10 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		OUT PlayerViewPointRotation
 		);
 
-
 	/// Ray-cast out to reach distance
 	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
 
+	// TODO
 	/// If the physics handle is attached
 	if (PhysicsHandle->GrabbedComponent)
 	{
@@ -129,21 +126,18 @@ const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 
 	/// Line-trace (AKA ray-cast) out to reach distance
 	FHitResult Hit;
-
 	GetWorld()->LineTraceSingleByObjectType(
 		OUT Hit,
 		PlayerViewPointLocation,
 		LineTraceEnd,
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
 		TraceParams
-		);
+	);
 
 	AActor* ActorHit = Hit.GetActor();
-
 	if (ActorHit)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *(ActorHit->GetName())
-			);
+		UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *(ActorHit->GetName()));
 	}
 
 	return Hit;
